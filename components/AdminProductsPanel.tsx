@@ -32,9 +32,11 @@ export function AdminProductsPanel({ products }: { products: Product[] }) {
         </div>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-2">
+      <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
         {products.map((product) => (
-          <AdminProductCard key={product.id} product={product} />
+          <div key={product.id} className="mx-auto w-full max-w-[400px]">
+            <AdminProductCard product={product} />
+          </div>
         ))}
       </div>
     </div>

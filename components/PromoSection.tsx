@@ -5,6 +5,8 @@ import { ProductCard } from "@/components/ProductCard";
 import { Button } from "@/components/ui/button";
 
 export function PromoSection({ products }: { products: Product[] }) {
+  const featuredProducts = products.slice(0, 3);
+
   return (
     <section id="promociones" className="section-shell py-14">
       <div className="mb-8 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
@@ -24,7 +26,7 @@ export function PromoSection({ products }: { products: Product[] }) {
       </div>
 
       <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-        {products.map((product, index) => (
+        {featuredProducts.map((product, index) => (
           <FadeIn key={product.id} delay={index * 0.05}>
             <ProductCard product={product} />
           </FadeIn>

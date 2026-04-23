@@ -8,8 +8,8 @@ export const brand = {
   heroTitle: "Descubre tu mejor versión con El Closet de Aleja",
   heroDescription:
     "Encuentra prendas femeninas, modernas y llenas de estilo para que te sientas segura, hermosa y lista para destacar en cualquier ocasión. Aquí no solo compras ropa: transformas tu look con piezas que enamoran a primera vista.",
-  city: "Bogotá, Colombia",
-  instagramUrl: "https://instagram.com",
+  city: "Pijao,Quindio",
+  instagramUrl: "https://www.instagram.com/closetdealeja?igsh=MW16cmF0dDd3em54aA==",
 };
 
 export const navLinks = [

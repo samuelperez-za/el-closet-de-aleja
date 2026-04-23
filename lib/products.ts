@@ -49,31 +49,36 @@ function normalizeProducts(rows: ProductRow[]): Product[] {
 async function queryProducts(whereClause = "", params: unknown[] = []) {
   if (!hasDatabaseUrl()) return null;
 
-  const sql = getSql();
-  const query = `
-    select
-      p.id,
-      p.name,
-      p.slug,
-      p.description,
-      p.price,
-      p.category,
-      p.is_promo,
-      p.is_active,
-      p.is_reserved,
-      p.whatsapp_message,
-      p.created_at,
-      p.updated_at,
-      pi.image_url,
-      pi.sort_order
-    from products p
-    left join product_images pi on pi.product_id = p.id
-    ${whereClause}
-    order by p.created_at desc, pi.sort_order asc
-  `;
+  try {
+    const sql = getSql();
+    const query = `
+      select
+        p.id,
+        p.name,
+        p.slug,
+        p.description,
+        p.price,
+        p.category,
+        p.is_promo,
+        p.is_active,
+        p.is_reserved,
+        p.whatsapp_message,
+        p.created_at,
+        p.updated_at,
+        pi.image_url,
+        pi.sort_order
+      from products p
+      left join product_images pi on pi.product_id = p.id
+      ${whereClause}
+      order by p.created_at desc, pi.sort_order asc
+    `;
 
-  const rows = await sql.query(query, params);
-  return normalizeProducts(rows as ProductRow[]);
+    const rows = await sql.query(query, params);
+    return normalizeProducts(rows as ProductRow[]);
+  } catch (error) {
+    console.error("Error fetching products from database:", error);
+    return null;
+  }
 }
 
 export const getPublicProducts = cache(async (): Promise<Product[]> => {

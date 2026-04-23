@@ -32,7 +32,7 @@ export function AdminCategoriesPanel({ initialArtwork }: { initialArtwork: Recor
 
           setArtwork((prev) => ({ ...prev, [category]: base64 }));
           setStatusMessage({ type: "success", text: `Imagen de ${categoryLabel(category)} actualizada.` });
-        } catch (error) {
+        } catch {
           setStatusMessage({ type: "error", text: "Error al actualizar la imagen." });
         }
       });

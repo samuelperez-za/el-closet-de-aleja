@@ -2,6 +2,11 @@ import { getSql, hasDatabaseUrl } from "@/lib/db";
 import { type CategorySlug } from "@/types/product";
 import { categoryArtwork as defaultArtwork } from "@/lib/constants";
 
+type CategorySettingsRow = {
+  id: string;
+  image_base64: string;
+};
+
 export async function getCategoryArtwork(): Promise<Record<CategorySlug, string>> {
   if (!hasDatabaseUrl()) return defaultArtwork;
 
@@ -20,7 +25,7 @@ export async function getCategoryArtwork(): Promise<Record<CategorySlug, string>
     const rows = await sql.query("select id, image_base64 from category_settings");
     
     const artwork = { ...defaultArtwork };
-    rows.forEach((row: any) => {
+    (rows as CategorySettingsRow[]).forEach((row) => {
       if (row.id in artwork) {
         artwork[row.id as CategorySlug] = row.image_base64;
       }

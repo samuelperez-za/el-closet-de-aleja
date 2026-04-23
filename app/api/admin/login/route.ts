@@ -4,7 +4,7 @@ import { createAdminSession, hasAdminCredentials, validateAdminCredentials } fro
 export async function POST(request: NextRequest) {
   if (!hasAdminCredentials()) {
     return NextResponse.json(
-      { error: "Configura ADMIN_EMAIL, ADMIN_PASSWORD y ADMIN_SESSION_SECRET en .env.local." },
+      { error: "Configura ADMIN_CREDENTIALS o ADMIN_EMAIL/ADMIN_PASSWORD junto con ADMIN_SESSION_SECRET en .env.local." },
       { status: 400 },
     );
   }

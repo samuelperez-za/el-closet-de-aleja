@@ -1,10 +1,10 @@
-/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Loader2, Pencil, Trash2 } from "lucide-react";
 import { useState } from "react";
+import { ProductImageGallery } from "@/components/ProductImageGallery";
 import { categoryLabel, formatPrice, getProductStatus, getWhatsAppLink } from "@/lib/utils";
 import type { Product } from "@/types/product";
 import { Badge } from "@/components/ui/badge";
@@ -33,13 +33,11 @@ export function AdminProductCard({ product }: { product: Product }) {
 
   return (
     <Card className="flex h-full flex-col overflow-hidden rounded-[2rem] p-0">
-      <div className="aspect-[4/3.6] bg-[linear-gradient(135deg,rgba(238,187,187,0.5),rgba(203,189,232,0.42))]">
-        {product.images[0]?.image_url ? (
-          <img src={product.images[0].image_url} alt={product.name} className="h-full w-full object-cover" />
-        ) : (
-          <div className="flex h-full items-center justify-center text-sm text-muted">Sin imagen</div>
-        )}
-      </div>
+      <ProductImageGallery
+        images={product.images.map((image) => image.image_url)}
+        productName={product.name}
+        aspectClassName="aspect-[4/3.6]"
+      />
 
       <div className="flex flex-1 flex-col p-6">
         <div className="flex items-start justify-between gap-4">

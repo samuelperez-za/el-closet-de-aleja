@@ -1,17 +1,17 @@
 @import "tailwindcss";
 
 :root {
-  --background: #fff7f8;
+  --background: #fffaf7;
   --foreground: #5f4a59;
-  --card: rgba(255, 255, 255, 0.78);
-  --card-strong: rgba(255, 255, 255, 0.94);
-  --border: rgba(156, 106, 138, 0.14);
+  --card: rgba(255, 255, 255, 0.86);
+  --card-strong: rgba(255, 255, 255, 0.96);
+  --border: rgba(156, 106, 138, 0.12);
   --primary: #df7f9a;
   --primary-strong: #bd5b85;
-  --secondary: #cbbde8;
-  --secondary-strong: #a48fcf;
+  --secondary: #d8cfc3;
+  --secondary-strong: #b8a89a;
   --muted: #876c7c;
-  --accent: #d7e0ea;
+  --accent: #e8dfd6;
   --font-sans:
     "Avenir Next", "Nunito Sans", "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
   --font-display:
@@ -46,35 +46,6 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans), sans-serif;
-  background-image:
-    radial-gradient(circle at top left, rgba(246, 200, 199, 0.75), transparent 24%),
-    radial-gradient(circle at top right, rgba(203, 189, 232, 0.34), transparent 18%),
-    linear-gradient(180deg, #fffafa 0%, #fff4f5 44%, #fff7fa 100%);
-}
-
-body::before,
-body::after {
-  content: "";
-  position: fixed;
-  width: 22rem;
-  height: 22rem;
-  border-radius: 9999px;
-  filter: blur(72px);
-  opacity: 0.55;
-  pointer-events: none;
-  z-index: -1;
-}
-
-body::before {
-  top: -8rem;
-  right: -7rem;
-  background: rgba(238, 187, 187, 0.8);
-}
-
-body::after {
-  bottom: -8rem;
-  left: -7rem;
-  background: rgba(184, 168, 217, 0.35);
 }
 
 a,
@@ -99,9 +70,9 @@ img {
 
 .glass-panel {
   border: 1px solid var(--border);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.88), rgba(255, 248, 251, 0.82));
-  box-shadow: 0 24px 60px rgba(198, 146, 166, 0.16);
-  backdrop-filter: blur(16px);
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 20px 44px rgba(175, 150, 132, 0.1);
+  backdrop-filter: blur(10px);
 }
 
 .section-shell {
@@ -116,7 +87,7 @@ img {
 
 .soft-ring {
   box-shadow:
-    0 20px 60px rgba(198, 146, 166, 0.15),
+    0 20px 60px rgba(175, 150, 132, 0.12),
     inset 0 1px 0 rgba(255, 255, 255, 0.7);
 }
 
@@ -130,12 +101,7 @@ img {
   inset: 1rem auto auto 1rem;
   width: 4rem;
   height: 4rem;
-  background:
-    radial-gradient(circle at center, rgba(223, 127, 154, 0.18) 0 30%, transparent 32%),
-    radial-gradient(circle at 20% 45%, rgba(203, 189, 232, 0.6) 0 12%, transparent 13%),
-    radial-gradient(circle at 78% 44%, rgba(203, 189, 232, 0.52) 0 12%, transparent 13%),
-    radial-gradient(circle at 50% 15%, rgba(238, 187, 187, 0.75) 0 14%, transparent 15%),
-    radial-gradient(circle at 49% 78%, rgba(238, 187, 187, 0.58) 0 14%, transparent 15%);
-  opacity: 0.8;
+  background: radial-gradient(circle at center, rgba(175, 150, 132, 0.12) 0 30%, transparent 32%);
+  opacity: 0.45;
   pointer-events: none;
 }

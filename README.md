@@ -20,9 +20,18 @@ Crea `.env.local` con:
 DATABASE_URL=
 ADMIN_EMAIL=
 ADMIN_PASSWORD=
+ADMIN_CREDENTIALS=
 ADMIN_SESSION_SECRET=
 NEXT_PUBLIC_WHATSAPP_NUMBER=573000000000
 ```
+
+Para varios admins puedes usar una sola variable:
+
+```bash
+ADMIN_CREDENTIALS=admin1@correo.com:clave-segura,admin2@correo.com:otra-clave
+```
+
+Si `ADMIN_CREDENTIALS` tiene valores, esa variable se usa por encima de `ADMIN_EMAIL` y `ADMIN_PASSWORD`.
 
 ## Base de datos
 
@@ -30,7 +39,7 @@ Ejecuta el SQL de [database/neon-schema.sql](/Users/samuelesteban/EL-CLOSET-DE-A
 
 ## Panel admin
 
-- Login privado con `ADMIN_EMAIL` y `ADMIN_PASSWORD`
+- Login privado con `ADMIN_CREDENTIALS` o `ADMIN_EMAIL` y `ADMIN_PASSWORD`
 - Sesión protegida con cookie firmada usando `ADMIN_SESSION_SECRET`
 - CRUD de productos vía API interna
 - Imágenes por URLs, para no depender de un Storage externo

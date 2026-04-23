@@ -1,23 +1,21 @@
-/* eslint-disable @next/next/no-img-element */
+"use client";
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { ProductImageGallery } from "@/components/ProductImageGallery";
 import { formatPrice, getProductStatus, getWhatsAppLink, categoryLabel } from "@/lib/utils";
 import type { Product } from "@/types/product";
 
 export function ProductCard({ product }: { product: Product }) {
   const status = getProductStatus(product);
-  const mainImage = product.images[0]?.image_url;
+  const imageUrls = product.images.map((image) => image.image_url);
 
   return (
     <Card className="flex h-full flex-col overflow-hidden rounded-[2rem] p-0">
-      <div className="relative aspect-[4/4.7] overflow-hidden bg-[linear-gradient(135deg,rgba(238,187,187,0.5),rgba(203,189,232,0.42))]">
+      <div className="relative">
         {product.is_promo ? <Badge className="absolute left-4 top-4 z-10">Promoción especial</Badge> : null}
-        {mainImage ? (
-          <img src={mainImage} alt={product.name} className="h-full w-full object-cover" />
-        ) : (
-          <div className="flex h-full items-center justify-center text-sm text-muted">Sin imagen</div>
-        )}
+        <ProductImageGallery images={imageUrls} productName={product.name} aspectClassName="aspect-[4/4.7]" />
       </div>
 
       <div className="flex flex-1 flex-col p-6">
