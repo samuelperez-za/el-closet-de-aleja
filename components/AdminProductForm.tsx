@@ -1,13 +1,13 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2, ImagePlus, X } from "lucide-react";
+import { Loader2, X } from "lucide-react";
 import { useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
 import { categories, type Product, type ProductInput } from "@/types/product";
-import { categoryLabel, slugify } from "@/lib/utils";
+import { categoryLabel } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -16,7 +16,6 @@ import { Textarea } from "@/components/ui/textarea";
 
 const productSchema = z.object({
   name: z.string().min(3, "Escribe un nombre más completo."),
-  slug: z.string().min(3, "El slug es obligatorio."),
   description: z.string().min(12, "Agrega una descripción útil."),
   price: z.coerce.number().min(1000, "Ingresa un precio válido."),
   category: z.enum(categories),
@@ -65,7 +64,6 @@ export function AdminProductForm({ product }: { product?: Product | null }) {
     resolver: zodResolver(productSchema),
     defaultValues: {
       name: product?.name || "",
-      slug: product?.slug || "",
       description: product?.description || "",
       price: product?.price || 0,
       category: product?.category || "sacos",
@@ -108,7 +106,6 @@ export function AdminProductForm({ product }: { product?: Product | null }) {
         // 2. Save the product with the real Blob URLs
         const payload: ProductInput = {
           name: values.name,
-          slug: slugify(values.slug || values.name),
           description: values.description,
           price: values.price,
           category: values.category,
@@ -181,23 +178,8 @@ export function AdminProductForm({ product }: { product?: Product | null }) {
         <div className="grid gap-6 md:grid-cols-2">
           <div>
             <Label>Nombre del producto</Label>
-            <Input
-              {...form.register("name")}
-              placeholder="Ej. Blazer rosa vintage"
-              onChange={(event) => {
-                form.register("name").onChange(event);
-                if (!form.getValues("slug")) {
-                  form.setValue("slug", slugify(event.target.value));
-                }
-              }}
-            />
+            <Input {...form.register("name")} placeholder="Ej. Blazer rosa vintage" />
             <p className="mt-2 text-xs text-rose-600">{form.formState.errors.name?.message}</p>
-          </div>
-
-          <div>
-            <Label>Slug automático</Label>
-            <Input {...form.register("slug")} placeholder="blazer-rosa-vintage" />
-            <p className="mt-2 text-xs text-rose-600">{form.formState.errors.slug?.message}</p>
           </div>
         </div>
 

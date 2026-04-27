@@ -1,9 +1,13 @@
 import { neon } from "@neondatabase/serverless";
 
+type SqlClient = {
+  query: <TRow = unknown>(query: string, params?: unknown[]) => Promise<TRow[]>;
+};
+
 async function test() {
   const url = process.env.DATABASE_URL;
   if (!url) return;
-  const sql: any = neon(url);
+  const sql = neon(url) as unknown as SqlClient;
 
   try {
     console.log("Running migrations...");

@@ -4,11 +4,10 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ProductImageGallery } from "@/components/ProductImageGallery";
-import { formatPrice, getProductStatus, getWhatsAppLink, categoryLabel } from "@/lib/utils";
+import { categoryLabel, formatPrice, getWhatsAppLink } from "@/lib/utils";
 import type { Product } from "@/types/product";
 
 export function ProductCard({ product }: { product: Product }) {
-  const status = getProductStatus(product);
   const imageUrls = product.images.map((image) => image.image_url);
 
   return (

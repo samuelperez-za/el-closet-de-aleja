@@ -1,9 +1,9 @@
 import { z } from "zod";
+import { slugify } from "@/lib/utils";
 import { categories, type ProductInput } from "@/types/product";
 
 const productInputSchema = z.object({
   name: z.string().min(3, "Escribe un nombre más completo."),
-  slug: z.string().min(3, "El slug es obligatorio."),
   description: z.string().min(12, "Agrega una descripción útil."),
   price: z.number().min(1000, "Ingresa un precio válido."),
   category: z.enum(categories),
@@ -12,7 +12,10 @@ const productInputSchema = z.object({
   is_reserved: z.boolean(),
   whatsapp_message: z.string().nullable().optional(),
   image_urls: z.array(z.string().min(1)).min(1, "Sube al menos una imagen para la prenda.").optional(),
-});
+}).transform((value) => ({
+  ...value,
+  slug: slugify(value.name),
+}));
 
 export function parseProductInput(value: unknown): ProductInput {
   return productInputSchema.parse(value);

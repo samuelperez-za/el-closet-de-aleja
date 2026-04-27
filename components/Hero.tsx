@@ -13,7 +13,7 @@ const highlights = [
 ];
 
 export function Hero() {
-  const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "573000000000";
+  const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "573216480578";
 
   return (
     <section

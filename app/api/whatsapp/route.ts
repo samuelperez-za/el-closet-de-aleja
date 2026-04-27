@@ -3,7 +3,7 @@ import { categoryLabel, formatPrice, isValidCategory } from "@/lib/utils";
 
 export async function POST(request: NextRequest) {
   const body = await request.json();
-  const phone = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "573000000000";
+  const phone = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "573216480578";
   const category = isValidCategory(body.category) ? body.category : "sacos";
 
   const text =

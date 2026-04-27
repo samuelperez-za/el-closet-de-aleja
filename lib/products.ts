@@ -1,6 +1,7 @@
 import { cache } from "react";
 import { demoProducts } from "@/lib/mock-data";
 import { getSql, hasDatabaseUrl } from "@/lib/db";
+import { slugify } from "@/lib/utils";
 import { categories, type CategorySlug, type Product, type ProductInput } from "@/types/product";
 
 type ProductRow = Omit<Product, "images"> & {
@@ -108,6 +109,7 @@ export async function getProductById(id: string) {
 
 export async function createProduct(input: ProductInput) {
   const sql = getSql();
+  const slug = input.slug || slugify(input.name);
   const result = await sql.query(
     `
       insert into products
@@ -118,7 +120,7 @@ export async function createProduct(input: ProductInput) {
     `,
     [
       input.name,
-      input.slug,
+      slug,
       input.description,
       input.price,
       input.category,
@@ -136,6 +138,7 @@ export async function createProduct(input: ProductInput) {
 
 export async function updateProduct(id: string, input: ProductInput) {
   const sql = getSql();
+  const slug = input.slug || slugify(input.name);
   await sql.query(
     `
       update products
@@ -155,7 +158,7 @@ export async function updateProduct(id: string, input: ProductInput) {
     [
       id,
       input.name,
-      input.slug,
+      slug,
       input.description,
       input.price,
       input.category,

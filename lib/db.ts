@@ -1,5 +1,9 @@
 import { neon } from "@neondatabase/serverless";
 
+type SqlClient = {
+  query: <TRow = unknown>(query: string, params?: unknown[]) => Promise<TRow[]>;
+};
+
 export function hasDatabaseUrl() {
   return Boolean(process.env.DATABASE_URL);
 }
@@ -9,8 +13,8 @@ export function getSql() {
     throw new Error("Falta DATABASE_URL.");
   }
 
-  const sql = neon(process.env.DATABASE_URL);
+  const sql = neon(process.env.DATABASE_URL) as unknown as SqlClient;
   return {
-    query: (query: string, params: any[] = []) => (sql as any).query(query, params),
+    query: <TRow = unknown>(query: string, params: unknown[] = []) => sql.query<TRow>(query, params),
   };
 }

@@ -1,18 +1,20 @@
+import Image from "next/image";
 import Link from "next/link";
 import { brand } from "@/lib/constants";
 import { categories } from "@/types/product";
-import { BrandMark } from "@/components/BrandMark";
 import { categoryHref, categoryLabel } from "@/lib/utils";
 
 export function Footer() {
-  const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "573104423025";
+  const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "573216480578";
 
   return (
     <footer className="section-shell pb-8 sm:pb-10">
       <div className="glass-panel grid gap-6 rounded-[2rem] p-5 sm:gap-8 sm:p-8 lg:grid-cols-[1.4fr_1fr_1fr]">
         <div className="space-y-4">
           <div className="flex items-center gap-3">
-            <BrandMark />
+            <span className="relative flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white/80 shadow-[inset_0_0_0_1px_rgba(189,91,133,0.08)]">
+              <Image src="/logo.png" alt="Logo" width={48} height={48} className="h-full w-full object-contain p-0.5" />
+            </span>
             <div>
               <h3 className="display-title text-3xl font-semibold text-primary-strong">{brand.name}</h3>
               <p className="text-sm text-muted">{brand.supportLine}</p>

@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 export function Header() {
   const [open, setOpen] = useState(false);
   const [logoError, setLogoError] = useState(false);
-  const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "573000000000";
+  const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "573216480578";
 
   return (
     <header className="section-shell sticky top-2 z-30 pt-2 sm:top-4 sm:pt-4">

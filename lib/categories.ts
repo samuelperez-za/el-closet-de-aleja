@@ -27,7 +27,7 @@ export async function getCategoryArtwork(): Promise<Record<CategorySlug, string>
     try {
       await sql.query("alter table category_settings add column if not exists image_url text");
       await sql.query("alter table category_settings alter column image_base64 drop not null");
-    } catch (e) {
+    } catch {
       // Ignorar si hay error menor (ej. la columna no existe)
     }
 

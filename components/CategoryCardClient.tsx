@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { ImageOff } from "lucide-react";
 import { useState } from "react";
@@ -37,9 +38,12 @@ export function CategoryCardClient({
             aria-label={categoryLabel(category)}
           >
             {/* Hidden img to detect load errors */}
-            <img
+            <Image
               src={extractImageUrl(artwork)}
               alt=""
+              width={1}
+              height={1}
+              unoptimized
               className="hidden"
               onError={() => setImageError(true)}
             />

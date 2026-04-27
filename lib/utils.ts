@@ -75,7 +75,7 @@ export function getProductStatus(product: Pick<Product, "is_active" | "is_reserv
 }
 
 export function getWhatsAppLink(product: Pick<Product, "name" | "price" | "category" | "whatsapp_message">) {
-  const phone = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "573000000000";
+  const phone = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "573216480578";
   const message =
     product.whatsapp_message ||
     `Hola, vi la prenda "${product.name}" en El Closet de Aleja y quiero reservarla.\nCategoría: ${categoryLabel(

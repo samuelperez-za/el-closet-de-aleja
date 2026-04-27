@@ -28,7 +28,7 @@ export type Product = {
 
 export type ProductInput = {
   name: string;
-  slug: string;
+  slug?: string;
   description: string;
   price: number;
   category: CategorySlug;
