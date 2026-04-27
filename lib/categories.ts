@@ -4,7 +4,7 @@ import { categoryArtwork as defaultArtwork } from "@/lib/constants";
 
 type CategorySettingsRow = {
   id: string;
-  image_base64: string;
+  image_url: string;
 };
 
 export async function getCategoryArtwork(): Promise<Record<CategorySlug, string>> {
@@ -17,17 +17,26 @@ export async function getCategoryArtwork(): Promise<Record<CategorySlug, string>
     await sql.query(`
       create table if not exists public.category_settings (
         id text primary key,
-        image_base64 text not null,
+        image_url text not null default '',
         updated_at timestamptz not null default now()
       );
     `);
 
-    const rows = await sql.query("select id, image_base64 from category_settings");
+    // Migración: Si la tabla existe pero no tiene image_url, la agregamos
+    // Y nos aseguramos que image_base64 sea opcional (puede venir de una versión antigua)
+    try {
+      await sql.query("alter table category_settings add column if not exists image_url text");
+      await sql.query("alter table category_settings alter column image_base64 drop not null");
+    } catch (e) {
+      // Ignorar si hay error menor (ej. la columna no existe)
+    }
+
+    const rows = await sql.query("select id, image_url from category_settings");
     
     const artwork = { ...defaultArtwork };
     (rows as CategorySettingsRow[]).forEach((row) => {
       if (row.id in artwork) {
-        artwork[row.id as CategorySlug] = row.image_base64;
+        artwork[row.id as CategorySlug] = row.image_url;
       }
     });
 
@@ -38,16 +47,16 @@ export async function getCategoryArtwork(): Promise<Record<CategorySlug, string>
   }
 }
 
-export async function updateCategoryArtwork(category: CategorySlug, imageBase64: string) {
+export async function updateCategoryArtwork(category: CategorySlug, imageUrl: string) {
   const sql = getSql();
   await sql.query(
     `
-    insert into category_settings (id, image_base64, updated_at)
+    insert into category_settings (id, image_url, updated_at)
     values ($1, $2, now())
     on conflict (id) do update set
-      image_base64 = excluded.image_base64,
+      image_url = excluded.image_url,
       updated_at = now()
     `,
-    [category, imageBase64]
+    [category, imageUrl]
   );
 }

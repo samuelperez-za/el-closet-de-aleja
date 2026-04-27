@@ -21,10 +21,10 @@ export const navLinks = [
 ];
 
 export const categoryArtwork: Record<CategorySlug, string> = {
-  sacos: "none",
-  "crop-tops": "none",
-  jean: "none",
-  deportivo: "none",
+  sacos: "https://images.unsplash.com/photo-1516762689617-e1cffcef479d?auto=format&fit=crop&w=800&q=80",
+  "crop-tops": "https://images.unsplash.com/photo-1551163943-3f6a855d1153?auto=format&fit=crop&w=800&q=80",
+  jean: "https://images.unsplash.com/photo-1541099649105-f69ad21f3246?auto=format&fit=crop&w=800&q=80",
+  deportivo: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=800&q=80",
 };
 
 export const whyBuyItems = [

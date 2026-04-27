@@ -9,13 +9,13 @@ export async function PUT(request: NextRequest) {
   }
 
   try {
-    const { category, imageBase64 } = await request.json();
+    const { category, imageUrl } = await request.json();
 
-    if (!category || !imageBase64) {
+    if (!category || !imageUrl) {
       return NextResponse.json({ error: "Datos incompletos." }, { status: 400 });
     }
 
-    await updateCategoryArtwork(category, imageBase64);
+    await updateCategoryArtwork(category, imageUrl);
 
     revalidatePath("/");
     revalidatePath("/admin/categorias");

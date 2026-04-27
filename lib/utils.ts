@@ -48,7 +48,8 @@ export function categoryHref(category: CategorySlug) {
   return `/categoria/${category}`;
 }
 
-export function getCategoryArtworkStyle(artwork: string): CSSProperties {
+export function getCategoryArtworkStyle(artwork: string | null | undefined): CSSProperties {
+  if (!artwork) return {};
   const value = artwork.trim();
   const overlay = "linear-gradient(180deg, rgba(85, 62, 79, 0.08), rgba(85, 62, 79, 0.08))";
 

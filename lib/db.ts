@@ -9,5 +9,8 @@ export function getSql() {
     throw new Error("Falta DATABASE_URL.");
   }
 
-  return neon(process.env.DATABASE_URL);
+  const sql = neon(process.env.DATABASE_URL);
+  return {
+    query: (query: string, params: any[] = []) => (sql as any).query(query, params),
+  };
 }
