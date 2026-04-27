@@ -39,26 +39,26 @@ export function AdminProductCard({ product }: { product: Product }) {
         aspectClassName="aspect-[4/3.6]"
       />
 
-      <div className="flex flex-1 flex-col p-6">
-        <div className="flex items-start justify-between gap-4">
-          <div>
-            <h3 className="text-lg font-semibold text-primary-strong">{product.name}</h3>
-            <p className="mt-2 text-xs font-semibold uppercase tracking-[0.16em] text-muted">
+      <div className="flex flex-1 flex-col p-4 sm:p-6">
+        <div className="flex items-start justify-between gap-3">
+          <div className="min-w-0">
+            <h3 className="truncate text-base font-semibold text-primary-strong sm:text-lg">{product.name}</h3>
+            <p className="mt-1 text-xs font-semibold uppercase tracking-[0.16em] text-muted sm:mt-2">
               {categoryLabel(product.category)}
             </p>
           </div>
-          <span className="text-sm font-extrabold text-primary-strong">{formatPrice(product.price)}</span>
+          <span className="shrink-0 text-sm font-extrabold text-primary-strong">{formatPrice(product.price)}</span>
         </div>
 
-        <p className="mt-4 text-sm leading-7 text-muted">{product.description}</p>
+        <p className="mt-3 line-clamp-2 text-sm leading-6 text-muted sm:mt-4 sm:leading-7">{product.description}</p>
 
-        <div className="mt-5 flex flex-wrap gap-2">
+        <div className="mt-3 flex flex-wrap gap-1.5 sm:mt-5 sm:gap-2">
           <Badge>{product.is_promo ? "Promoción" : "Colección"}</Badge>
           <Badge>{status}</Badge>
           <Badge>{product.is_active ? "Visible" : "Oculto"}</Badge>
         </div>
 
-        <div className="mt-6 flex flex-wrap gap-3">
+        <div className="mt-4 flex flex-wrap gap-2 sm:mt-6 sm:gap-3">
           <Link href={`/admin/productos/${product.id}/edit`}>
             <Button variant="secondary" size="sm">
               <Pencil className="mr-2 h-4 w-4" />

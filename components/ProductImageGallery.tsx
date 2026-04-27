@@ -2,7 +2,7 @@
 
 /* eslint-disable @next/next/no-img-element */
 
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, ImageOff } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 
@@ -16,24 +16,35 @@ export function ProductImageGallery({
   aspectClassName: string;
 }) {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [failedImages, setFailedImages] = useState<Set<number>>(new Set());
   const hasImages = images.length > 0;
   const hasMultipleImages = images.length > 1;
+  const currentFailed = failedImages.has(activeIndex);
 
   function goToNextImage() {
     setActiveIndex((current) => (current === images.length - 1 ? 0 : current + 1));
   }
 
+  function handleImageError(index: number) {
+    setFailedImages((prev) => new Set(prev).add(index));
+  }
+
   return (
     <div>
       <div className={`relative overflow-hidden bg-[linear-gradient(135deg,rgba(238,187,187,0.5),rgba(203,189,232,0.42))] ${aspectClassName}`}>
-        {hasImages ? (
+        {hasImages && !currentFailed ? (
           <img
             src={images[activeIndex]}
             alt={`${productName} - imagen ${activeIndex + 1}`}
             className="h-full w-full object-cover"
+            loading="lazy"
+            onError={() => handleImageError(activeIndex)}
           />
         ) : (
-          <div className="flex h-full items-center justify-center text-sm text-muted">Sin imagen</div>
+          <div className="flex h-full flex-col items-center justify-center gap-2 text-sm text-muted">
+            <ImageOff className="h-8 w-8 opacity-40" />
+            <span>{hasImages ? "Imagen no disponible" : "Sin imagen"}</span>
+          </div>
         )}
 
         {hasMultipleImages ? (

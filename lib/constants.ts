@@ -21,14 +21,10 @@ export const navLinks = [
 ];
 
 export const categoryArtwork: Record<CategorySlug, string> = {
-  sacos:
-    "linear-gradient(180deg, rgba(85, 62, 79, 0.08), rgba(85, 62, 79, 0.08)), url('/images/categories/sacos.png') center/cover",
-  "crop-tops":
-    "linear-gradient(180deg, rgba(85, 62, 79, 0.08), rgba(85, 62, 79, 0.08)), url('/images/categories/croptops.png') center/cover",
-  jean:
-    "linear-gradient(180deg, rgba(85, 62, 79, 0.08), rgba(85, 62, 79, 0.08)), url('/images/categories/jean.png') center/cover",
-  deportivo:
-    "linear-gradient(180deg, rgba(85, 62, 79, 0.08), rgba(85, 62, 79, 0.08)), url('/images/categories/deportivo.png') center/cover",
+  sacos: "none",
+  "crop-tops": "none",
+  jean: "none",
+  deportivo: "none",
 };
 
 export const whyBuyItems = [

@@ -8,8 +8,8 @@ export function Footer() {
   const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "573104423025";
 
   return (
-    <footer className="section-shell pb-10">
-      <div className="glass-panel grid gap-8 rounded-[2rem] p-8 lg:grid-cols-[1.4fr_1fr_1fr]">
+    <footer className="section-shell pb-8 sm:pb-10">
+      <div className="glass-panel grid gap-6 rounded-[2rem] p-5 sm:gap-8 sm:p-8 lg:grid-cols-[1.4fr_1fr_1fr]">
         <div className="space-y-4">
           <div className="flex items-center gap-3">
             <BrandMark />
