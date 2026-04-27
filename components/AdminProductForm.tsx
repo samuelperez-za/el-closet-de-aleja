@@ -1,8 +1,8 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2 } from "lucide-react";
-import { useState, useTransition } from "react";
+import { Loader2, ImagePlus, X } from "lucide-react";
+import { useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
@@ -29,11 +29,37 @@ const productSchema = z.object({
 type ProductFormValues = z.infer<typeof productSchema>;
 type ProductFormInput = z.input<typeof productSchema>;
 
+/** Uploads image files to Vercel Blob via the admin upload endpoint. Returns the public URLs. */
+async function uploadImages(files: File[]): Promise<string[]> {
+  const formData = new FormData();
+  for (const file of files) {
+    formData.append("files", file);
+  }
+
+  const response = await fetch("/api/admin/upload", {
+    method: "POST",
+    body: formData,
+  });
+
+  const data = (await response.json()) as { urls?: string[]; error?: string };
+
+  if (!response.ok || !data.urls) {
+    throw new Error(data.error || "No fue posible subir las imágenes.");
+  }
+
+  return data.urls;
+}
+
 export function AdminProductForm({ product }: { product?: Product | null }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
-  const [selectedImages, setSelectedImages] = useState<string[]>([]);
+  const [uploadProgress, setUploadProgress] = useState<string | null>(null);
+
+  // Keep selected File objects for upload and local preview URLs
+  const [pendingFiles, setPendingFiles] = useState<File[]>([]);
+  const [previewUrls, setPreviewUrls] = useState<string[]>([]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const form = useForm<ProductFormInput, unknown, ProductFormValues>({
     resolver: zodResolver(productSchema),
@@ -53,21 +79,33 @@ export function AdminProductForm({ product }: { product?: Product | null }) {
   const watchedPromo = useWatch({ control: form.control, name: "is_promo" });
   const watchedReserved = useWatch({ control: form.control, name: "is_reserved" });
   const watchedActive = useWatch({ control: form.control, name: "is_active" });
-  const imagePreview = selectedImages.length
-    ? selectedImages
+
+  // Show local previews for new files, or existing product images
+  const imagePreview = previewUrls.length
+    ? previewUrls
     : product?.images.map((image) => image.image_url) || [];
 
   function onSubmit(values: ProductFormValues) {
     startTransition(async () => {
       try {
-        const finalImages = selectedImages.length
-          ? selectedImages
-          : product?.images.map((image) => image.image_url) || [];
+        setStatusMessage(null);
 
-        if (!finalImages.length) {
+        // 1. Determine image URLs: upload new files or keep existing ones
+        let finalImageUrls: string[];
+
+        if (pendingFiles.length) {
+          setUploadProgress("Subiendo imágenes…");
+          finalImageUrls = await uploadImages(pendingFiles);
+          setUploadProgress(null);
+        } else {
+          finalImageUrls = product?.images.map((image) => image.image_url) || [];
+        }
+
+        if (!finalImageUrls.length) {
           throw new Error("Sube al menos una imagen para la prenda.");
         }
 
+        // 2. Save the product with the real Blob URLs
         const payload: ProductInput = {
           name: values.name,
           slug: slugify(values.slug || values.name),
@@ -78,7 +116,7 @@ export function AdminProductForm({ product }: { product?: Product | null }) {
           is_reserved: values.is_reserved,
           is_active: values.is_active,
           whatsapp_message: values.whatsapp_message || null,
-          image_urls: finalImages,
+          image_urls: finalImageUrls,
         };
 
         const response = await fetch(
@@ -98,20 +136,43 @@ export function AdminProductForm({ product }: { product?: Product | null }) {
         router.push("/admin/productos");
         router.refresh();
       } catch (error) {
+        setUploadProgress(null);
         setStatusMessage(error instanceof Error ? error.message : "Ocurrió un error guardando la prenda.");
       }
     });
   }
 
-  async function handleImageSelection(event: React.ChangeEvent<HTMLInputElement>) {
+  function handleImageSelection(event: React.ChangeEvent<HTMLInputElement>) {
     const files = Array.from(event.target.files || []);
     if (!files.length) {
-      setSelectedImages([]);
+      setPendingFiles([]);
+      setPreviewUrls([]);
       return;
     }
 
-    const imageDataUrls = await Promise.all(files.map(readFileAsDataUrl));
-    setSelectedImages(imageDataUrls);
+    // Revoke old object URLs to avoid memory leaks
+    previewUrls.forEach((url) => {
+      if (url.startsWith("blob:")) URL.revokeObjectURL(url);
+    });
+
+    // Create lightweight object URLs for preview (no base64 conversion)
+    const urls = files.map((file) => URL.createObjectURL(file));
+    setPendingFiles(files);
+    setPreviewUrls(urls);
+    setStatusMessage(null);
+  }
+
+  function removeImage(index: number) {
+    const url = previewUrls[index];
+    if (url?.startsWith("blob:")) URL.revokeObjectURL(url);
+
+    const newFiles = pendingFiles.filter((_, i) => i !== index);
+    const newUrls = previewUrls.filter((_, i) => i !== index);
+    setPendingFiles(newFiles);
+    setPreviewUrls(newUrls);
+
+    // Reset file input so the user can re-select
+    if (fileInputRef.current) fileInputRef.current.value = "";
   }
 
   return (
@@ -201,6 +262,7 @@ export function AdminProductForm({ product }: { product?: Product | null }) {
         <div>
           <Label>Imágenes del producto</Label>
           <Input
+            ref={fileInputRef}
             type="file"
             accept="image/*"
             multiple
@@ -214,11 +276,28 @@ export function AdminProductForm({ product }: { product?: Product | null }) {
         {imagePreview.length ? (
           <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
             {imagePreview.map((image, index) => (
-              <div key={`${image}-${index}`} className="overflow-hidden rounded-[1.4rem] border border-border bg-white/80">
+              <div key={`img-${index}`} className="group relative overflow-hidden rounded-[1.4rem] border border-border bg-white/80">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={image} alt={`Vista previa ${index + 1}`} className="h-36 w-full object-cover" />
+                {previewUrls.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => removeImage(index)}
+                    className="absolute right-2 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-black/60 text-white opacity-0 transition-opacity group-hover:opacity-100"
+                    aria-label={`Eliminar imagen ${index + 1}`}
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                )}
               </div>
             ))}
+          </div>
+        ) : null}
+
+        {uploadProgress ? (
+          <div className="flex items-center gap-2 text-sm text-muted">
+            <Loader2 className="h-4 w-4 animate-spin" />
+            {uploadProgress}
           </div>
         ) : null}
 
@@ -236,15 +315,6 @@ export function AdminProductForm({ product }: { product?: Product | null }) {
       </form>
     </Card>
   );
-}
-
-function readFileAsDataUrl(file: File) {
-  return new Promise<string>((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(String(reader.result || ""));
-    reader.onerror = () => reject(new Error(`No se pudo leer el archivo ${file.name}.`));
-    reader.readAsDataURL(file);
-  });
 }
 
 function ToggleField({
