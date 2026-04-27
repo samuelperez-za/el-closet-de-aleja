@@ -20,10 +20,10 @@ export function CategoryCardClient({
   const hasRealImage = artwork.includes("url(");
 
   return (
-    <Card className="overflow-hidden rounded-[2rem] p-0">
+    <Card className="overflow-hidden rounded-[1.8rem] p-0 shadow-sm transition-shadow hover:shadow-md sm:rounded-[2rem]">
       {hasRealImage && !imageError ? (
         <div
-          className="h-48 w-full sm:h-64"
+          className="h-36 w-full sm:h-64"
           style={getArtworkStyle(artwork)}
           role="img"
           aria-label={categoryLabel(category)}
@@ -39,11 +39,11 @@ export function CategoryCardClient({
       ) : (
         <CategoryPlaceholder category={category} />
       )}
-      <div className="p-5 sm:p-6">
-        <h3 className="text-lg font-semibold text-primary-strong sm:text-xl">{categoryLabel(category)}</h3>
-        <p className="mt-2 text-sm leading-7 text-muted sm:mt-3">{categoryDescription(category)}</p>
-        <Link href={categoryHref(category)} className="mt-4 inline-flex sm:mt-5">
-          <Button variant="ghost">Ver prendas</Button>
+      <div className="p-3.5 sm:p-6">
+        <h3 className="truncate text-sm font-semibold text-primary-strong sm:text-xl">{categoryLabel(category)}</h3>
+        <p className="mt-1.5 line-clamp-2 text-[11px] leading-relaxed text-muted sm:mt-3 sm:text-sm sm:leading-7">{categoryDescription(category)}</p>
+        <Link href={categoryHref(category)} className="mt-3 inline-flex w-full sm:mt-5 sm:w-auto">
+          <Button variant="ghost" size="sm" className="w-full text-[10px] sm:text-sm">Ver prendas</Button>
         </Link>
       </div>
     </Card>
@@ -61,12 +61,12 @@ function CategoryPlaceholder({ category }: { category: CategorySlug }) {
 
   return (
     <div
-      className="flex h-48 w-full items-center justify-center sm:h-64"
+      className="flex h-36 w-full items-center justify-center sm:h-64"
       style={{ background: gradients[category] }}
     >
-      <div className="flex flex-col items-center gap-2 text-muted/60">
-        <ImageOff className="h-8 w-8" />
-        <span className="text-xs font-medium uppercase tracking-widest">{categoryLabel(category)}</span>
+      <div className="flex flex-col items-center gap-1 text-muted/60">
+        <ImageOff className="h-5 w-5 sm:h-8 sm:w-8" />
+        <span className="text-[10px] font-medium uppercase tracking-widest sm:text-xs">{categoryLabel(category)}</span>
       </div>
     </div>
   );

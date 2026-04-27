@@ -20,7 +20,7 @@ export async function CategoryGrid() {
         </p>
       </FadeIn>
 
-      <div className="grid grid-cols-2 gap-3 sm:gap-6 md:grid-cols-2 xl:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-4">
         {categories.map((category, index) => (
           <FadeIn key={category} delay={index * 0.06}>
             <CategoryCardClient category={category} artwork={artwork[category]} />
