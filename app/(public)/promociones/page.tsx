@@ -27,11 +27,9 @@ export default async function PromotionsPage() {
           </p>
         </section>
 
-        <section className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+        <section className="grid grid-cols-2 gap-3 sm:gap-6 md:grid-cols-2 xl:grid-cols-3">
           {products.map((product) => (
-            <div key={product.id} className="mx-auto w-full max-w-[320px]">
-              <ProductCard product={product} />
-            </div>
+            <ProductCard key={product.id} product={product} />
           ))}
         </section>
       </main>

@@ -29,7 +29,7 @@ export default async function CategoryPage({ params }: { params: Params }) {
           <p className="mt-4 text-base leading-8 text-muted">{categoryDescription(slug)}</p>
         </section>
 
-        <section className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+        <section className="grid grid-cols-2 gap-3 sm:gap-6 md:grid-cols-2 xl:grid-cols-3">
           {products.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}

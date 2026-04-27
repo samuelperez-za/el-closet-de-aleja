@@ -25,7 +25,7 @@ export function PromoSection({ products }: { products: Product[] }) {
         </FadeIn>
       </div>
 
-      <div className="grid gap-4 sm:gap-6 md:grid-cols-2 xl:grid-cols-3">
+      <div className="grid grid-cols-2 gap-3 sm:gap-6 md:grid-cols-2 xl:grid-cols-3">
         {featuredProducts.map((product, index) => (
           <FadeIn key={product.id} delay={index * 0.05}>
             <ProductCard product={product} />
