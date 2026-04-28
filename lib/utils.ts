@@ -15,6 +15,14 @@ export function formatPrice(value: number) {
   }).format(value);
 }
 
+export function getOriginalPrice(product: Pick<Product, "is_promo" | "price" | "original_price" | "discount_percentage">) {
+  if (!product.is_promo) return null;
+  if (product.original_price) return product.original_price;
+  if (!product.discount_percentage || product.discount_percentage >= 100) return null;
+
+  return Math.round(product.price / (1 - product.discount_percentage / 100));
+}
+
 export function slugify(value: string) {
   return value
     .toLowerCase()

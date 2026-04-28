@@ -1,3 +1,4 @@
+import { connection } from "next/server";
 import { CTASection } from "@/components/CTASection";
 import { CategoryGrid } from "@/components/CategoryGrid";
 import { Footer } from "@/components/Footer";
@@ -8,6 +9,7 @@ import { WhyBuySection } from "@/components/WhyBuySection";
 import { getPromoProducts } from "@/lib/products";
 
 export default async function HomePage() {
+  await connection();
   const promoProducts = await getPromoProducts();
 
   return (

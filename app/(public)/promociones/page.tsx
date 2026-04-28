@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { connection } from "next/server";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { ProductCard } from "@/components/ProductCard";
@@ -6,6 +7,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { getPromoProducts } from "@/lib/products";
 
 export default async function PromotionsPage() {
+  await connection();
   const products = await getPromoProducts();
 
   return (

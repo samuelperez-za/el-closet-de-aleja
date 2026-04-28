@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { Loader2, Pencil, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { ProductImageGallery } from "@/components/ProductImageGallery";
-import { categoryLabel, formatPrice, getProductStatus, getWhatsAppLink } from "@/lib/utils";
+import { categoryLabel, cn, formatPrice, getOriginalPrice, getProductStatus, getWhatsAppLink } from "@/lib/utils";
 import type { Product } from "@/types/product";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -15,6 +15,7 @@ export function AdminProductCard({ product }: { product: Product }) {
   const [isDeleting, setIsDeleting] = useState(false);
   const router = useRouter();
   const status = getProductStatus(product);
+  const originalPrice = getOriginalPrice(product);
 
   async function handleDelete() {
     const confirmed = window.confirm("¿Quieres eliminar esta prenda?");
@@ -47,13 +48,37 @@ export function AdminProductCard({ product }: { product: Product }) {
               {categoryLabel(product.category)}
             </p>
           </div>
-          <span className="shrink-0 text-sm font-extrabold text-primary-strong">{formatPrice(product.price)}</span>
+          <div className="flex flex-col items-end gap-0.5 text-right sm:gap-1">
+            {product.is_promo && originalPrice ? (
+              <span className="relative inline-flex text-xs font-medium text-muted/70 sm:text-sm">
+                <span className="absolute inset-x-0 top-1/2 h-[1.5px] -translate-y-1/2 bg-current" aria-hidden="true" />
+                <span>{formatPrice(originalPrice)}</span>
+              </span>
+            ) : null}
+            <span
+              className={cn(
+                "shrink-0 text-sm font-extrabold sm:text-base",
+                product.is_promo ? "text-primary-strong" : "text-primary-strong",
+              )}
+            >
+              {formatPrice(product.price)}
+            </span>
+            {product.is_promo && product.discount_percentage ? (
+              <span className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#d14b32] sm:text-xs">
+                {product.discount_percentage}% OFF
+              </span>
+            ) : null}
+          </div>
         </div>
 
         <p className="mt-3 line-clamp-2 text-sm leading-6 text-muted sm:mt-4 sm:leading-7">{product.description}</p>
 
         <div className="mt-3 flex flex-wrap gap-1.5 sm:mt-5 sm:gap-2">
-          <Badge>{product.is_promo ? "Promoción" : "Colección"}</Badge>
+          <Badge>
+            {product.is_promo 
+              ? (product.discount_percentage ? `Promoción ${product.discount_percentage}%` : "Promoción")
+              : "Colección"}
+          </Badge>
           <Badge>{status}</Badge>
           <Badge>{product.is_active ? "Visible" : "Oculto"}</Badge>
         </div>

@@ -12,6 +12,8 @@ export const demoProducts: Product[] = [
     is_active: true,
     is_reserved: false,
     whatsapp_message: null,
+    discount_percentage: 20,
+    original_price: 60000,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     images: [
@@ -33,6 +35,8 @@ export const demoProducts: Product[] = [
     is_active: true,
     is_reserved: false,
     whatsapp_message: null,
+    discount_percentage: 20,
+    original_price: 40000,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     images: [
@@ -54,6 +58,8 @@ export const demoProducts: Product[] = [
     is_active: true,
     is_reserved: false,
     whatsapp_message: null,
+    discount_percentage: null,
+    original_price: null,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     images: [
@@ -75,6 +81,8 @@ export const demoProducts: Product[] = [
     is_active: true,
     is_reserved: false,
     whatsapp_message: null,
+    discount_percentage: 20,
+    original_price: 80000,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     images: [

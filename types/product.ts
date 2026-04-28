@@ -21,6 +21,8 @@ export type Product = {
   is_active: boolean;
   is_reserved: boolean;
   whatsapp_message: string | null;
+  discount_percentage: number | null;
+  original_price: number | null;
   created_at: string;
   updated_at: string;
   images: ProductImage[];
@@ -36,5 +38,7 @@ export type ProductInput = {
   is_active: boolean;
   is_reserved: boolean;
   whatsapp_message?: string | null;
+  discount_percentage?: number | null;
+  original_price?: number | null;
   image_urls?: string[];
 };

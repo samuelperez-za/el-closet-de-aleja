@@ -15,6 +15,10 @@ create table if not exists public.products (
   updated_at timestamptz not null default now()
 );
 
+alter table public.products
+  add column if not exists discount_percentage numeric,
+  add column if not exists original_price numeric;
+
 create table if not exists public.product_images (
   id uuid primary key default gen_random_uuid(),
   product_id uuid not null references public.products(id) on delete cascade,

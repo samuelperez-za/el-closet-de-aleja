@@ -27,6 +27,8 @@ function normalizeProducts(rows: ProductRow[]): Product[] {
         is_active: row.is_active,
         is_reserved: row.is_reserved,
         whatsapp_message: row.whatsapp_message,
+        discount_percentage: row.discount_percentage ? Number(row.discount_percentage) : null,
+        original_price: row.original_price ? Number(row.original_price) : null,
         created_at: row.created_at,
         updated_at: row.updated_at,
         images: row.image_url
@@ -64,6 +66,8 @@ async function queryProducts(whereClause = "", params: unknown[] = []) {
         p.is_active,
         p.is_reserved,
         p.whatsapp_message,
+        p.discount_percentage,
+        p.original_price,
         p.created_at,
         p.updated_at,
         pi.image_url,
@@ -113,9 +117,9 @@ export async function createProduct(input: ProductInput) {
   const result = await sql.query(
     `
       insert into products
-        (name, slug, description, price, category, is_promo, is_active, is_reserved, whatsapp_message)
+        (name, slug, description, price, category, is_promo, is_active, is_reserved, whatsapp_message, discount_percentage, original_price)
       values
-        ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+        ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
       returning id
     `,
     [
@@ -128,6 +132,8 @@ export async function createProduct(input: ProductInput) {
       input.is_active,
       input.is_reserved,
       input.whatsapp_message || null,
+      input.discount_percentage || null,
+      input.original_price || null,
     ],
   );
 
@@ -152,6 +158,8 @@ export async function updateProduct(id: string, input: ProductInput) {
         is_active = $8,
         is_reserved = $9,
         whatsapp_message = $10,
+        discount_percentage = $11,
+        original_price = $12,
         updated_at = now()
       where id = $1
     `,
@@ -166,6 +174,8 @@ export async function updateProduct(id: string, input: ProductInput) {
       input.is_active,
       input.is_reserved,
       input.whatsapp_message || null,
+      input.discount_percentage || null,
+      input.original_price || null,
     ],
   );
 

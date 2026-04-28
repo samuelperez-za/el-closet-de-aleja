@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, X } from "lucide-react";
-import { useRef, useState, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
@@ -23,6 +23,8 @@ const productSchema = z.object({
   is_reserved: z.boolean(),
   is_active: z.boolean(),
   whatsapp_message: z.string().optional(),
+  discount_percentage: z.coerce.number().optional().nullable(),
+  original_price: z.coerce.number().optional().nullable(),
 });
 
 type ProductFormValues = z.infer<typeof productSchema>;
@@ -71,12 +73,37 @@ export function AdminProductForm({ product }: { product?: Product | null }) {
       is_reserved: product?.is_reserved || false,
       is_active: product?.is_active ?? true,
       whatsapp_message: product?.whatsapp_message || "",
+      discount_percentage: product?.discount_percentage || null,
+      original_price: product?.original_price || null,
     },
   });
 
   const watchedPromo = useWatch({ control: form.control, name: "is_promo" });
   const watchedReserved = useWatch({ control: form.control, name: "is_reserved" });
   const watchedActive = useWatch({ control: form.control, name: "is_active" });
+  const watchedOriginalPrice = useWatch({ control: form.control, name: "original_price" });
+  const watchedDiscountPercentage = useWatch({ control: form.control, name: "discount_percentage" });
+
+  // Auto-calculate price from original price and percentage when in promo
+  useEffect(() => {
+    if (watchedPromo && watchedOriginalPrice && watchedDiscountPercentage !== null && watchedDiscountPercentage !== undefined) {
+      const newPrice = Math.round(watchedOriginalPrice * (1 - watchedDiscountPercentage / 100));
+      if (form.getValues("price") !== newPrice) {
+        form.setValue("price", newPrice);
+      }
+    }
+  }, [watchedOriginalPrice, watchedDiscountPercentage, watchedPromo, form]);
+
+  // Update WhatsApp message automatically when promo details change
+  useEffect(() => {
+    if (watchedPromo && watchedDiscountPercentage) {
+      const currentName = form.getValues("name");
+      form.setValue(
+        "whatsapp_message",
+        `¡Hola Aleja! Me interesa este producto que está en PROMOCIÓN (${watchedDiscountPercentage}% OFF): ${currentName || "esta prenda"}. ✨`
+      );
+    }
+  }, [watchedDiscountPercentage, watchedPromo, form]);
 
   // Show local previews for new files, or existing product images
   const imagePreview = previewUrls.length
@@ -113,6 +140,8 @@ export function AdminProductForm({ product }: { product?: Product | null }) {
           is_reserved: values.is_reserved,
           is_active: values.is_active,
           whatsapp_message: values.whatsapp_message || null,
+          discount_percentage: values.discount_percentage || null,
+          original_price: values.original_price || null,
           image_urls: finalImageUrls,
         };
 
@@ -193,11 +222,33 @@ export function AdminProductForm({ product }: { product?: Product | null }) {
         </div>
 
         <div className="grid gap-6 md:grid-cols-2">
-          <div>
-            <Label>Precio</Label>
-            <Input {...form.register("price")} type="number" min={0} placeholder="45000" />
-            <p className="mt-2 text-xs text-rose-600">{form.formState.errors.price?.message}</p>
-          </div>
+          {!watchedPromo ? (
+            <div>
+              <Label>Precio de Venta</Label>
+              <Input {...form.register("price")} type="number" min={0} placeholder="45000" />
+              <p className="mt-2 text-xs text-rose-600">{form.formState.errors.price?.message}</p>
+            </div>
+          ) : (
+            <>
+              <div>
+                <Label>Precio Original</Label>
+                <Input {...form.register("original_price")} type="number" min={0} placeholder="Ej. 60000" />
+                <p className="mt-2 text-xs text-muted">Precio antes del descuento.</p>
+                <p className="mt-2 text-xs text-rose-600">{form.formState.errors.original_price?.message}</p>
+              </div>
+              <div>
+                <Label>Descuento (%)</Label>
+                <Input {...form.register("discount_percentage")} type="number" min={0} max={100} placeholder="20" />
+                <p className="mt-2 text-xs text-muted">Porcentaje a rebajar.</p>
+                <p className="mt-2 text-xs text-rose-600">{form.formState.errors.discount_percentage?.message}</p>
+              </div>
+              <div>
+                <Label>Precio Final (Calculado)</Label>
+                <Input {...form.register("price")} type="number" readOnly className="bg-muted/10 font-bold text-primary-strong" />
+                <p className="mt-2 text-xs text-primary-strong">Este precio se calcula solo.</p>
+              </div>
+            </>
+          )}
 
           <div>
             <Label>Categoría</Label>
@@ -227,7 +278,13 @@ export function AdminProductForm({ product }: { product?: Product | null }) {
           <ToggleField
             label="Marcar como promoción"
             checked={watchedPromo}
-            onChange={(value) => form.setValue("is_promo", value)}
+            onChange={(value) => {
+              form.setValue("is_promo", value);
+              if (!value) {
+                form.setValue("original_price", null);
+                form.setValue("discount_percentage", null);
+              }
+            }}
           />
           <ToggleField
             label="Marcar como reservada"

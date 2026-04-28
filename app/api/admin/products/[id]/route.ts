@@ -2,9 +2,19 @@ import { revalidatePath } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
 import { isAdminAuthenticated } from "@/lib/admin-session";
 import { getProductMutationErrorMessage, parseProductInput } from "@/lib/product-input";
-import { deleteProduct, updateProduct } from "@/lib/products";
+import { deleteProduct, getProductById, updateProduct } from "@/lib/products";
 
 type Params = Promise<{ id: string }>;
+
+function revalidateProductPaths(category: string, id?: string) {
+  revalidatePath("/");
+  revalidatePath("/promociones");
+  revalidatePath("/admin/productos");
+  revalidatePath(`/categoria/${category}`);
+  if (id) {
+    revalidatePath(`/admin/productos/${id}/edit`);
+  }
+}
 
 export async function PUT(request: NextRequest, { params }: { params: Params }) {
   if (!(await isAdminAuthenticated())) {
@@ -14,13 +24,14 @@ export async function PUT(request: NextRequest, { params }: { params: Params }) 
   try {
     const { id } = await params;
     const body = parseProductInput(await request.json());
+    const existingProduct = await getProductById(id);
 
     await updateProduct(id, body);
 
-    revalidatePath("/");
-    revalidatePath("/promociones");
-    revalidatePath("/admin/productos");
-    revalidatePath(`/admin/productos/${id}/edit`);
+    if (existingProduct && existingProduct.category !== body.category) {
+      revalidatePath(`/categoria/${existingProduct.category}`);
+    }
+    revalidateProductPaths(body.category, id);
 
     return NextResponse.json({ ok: true });
   } catch (error) {
@@ -35,11 +46,16 @@ export async function DELETE(_request: NextRequest, { params }: { params: Params
 
   try {
     const { id } = await params;
+    const existingProduct = await getProductById(id);
     await deleteProduct(id);
 
-    revalidatePath("/");
-    revalidatePath("/promociones");
-    revalidatePath("/admin/productos");
+    if (existingProduct) {
+      revalidateProductPaths(existingProduct.category);
+    } else {
+      revalidatePath("/");
+      revalidatePath("/promociones");
+      revalidatePath("/admin/productos");
+    }
 
     return NextResponse.json({ ok: true });
   } catch (error) {

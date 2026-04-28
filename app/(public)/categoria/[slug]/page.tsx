@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { connection } from "next/server";
 import { notFound } from "next/navigation";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
@@ -10,6 +11,7 @@ import { categoryDescription, categoryLabel, isValidCategory } from "@/lib/utils
 type Params = Promise<{ slug: string }>;
 
 export default async function CategoryPage({ params }: { params: Params }) {
+  await connection();
   const { slug } = await params;
   if (!isValidCategory(slug)) notFound();
 
