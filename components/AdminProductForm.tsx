@@ -30,6 +30,15 @@ const productSchema = z.object({
 type ProductFormValues = z.infer<typeof productSchema>;
 type ProductFormInput = z.input<typeof productSchema>;
 
+function toOptionalNumber(value: unknown) {
+  if (typeof value === "number" && Number.isFinite(value)) return value;
+  if (typeof value === "string" && value.trim() !== "") {
+    const parsed = Number(value);
+    return Number.isFinite(parsed) ? parsed : null;
+  }
+  return null;
+}
+
 /** Uploads image files to Vercel Blob via the admin upload endpoint. Returns the public URLs. */
 async function uploadImages(files: File[]): Promise<string[]> {
   const formData = new FormData();
@@ -86,8 +95,11 @@ export function AdminProductForm({ product }: { product?: Product | null }) {
 
   // Auto-calculate price from original price and percentage when in promo
   useEffect(() => {
-    if (watchedPromo && watchedOriginalPrice && watchedDiscountPercentage !== null && watchedDiscountPercentage !== undefined) {
-      const newPrice = Math.round(watchedOriginalPrice * (1 - watchedDiscountPercentage / 100));
+    const originalPrice = toOptionalNumber(watchedOriginalPrice);
+    const discountPercentage = toOptionalNumber(watchedDiscountPercentage);
+
+    if (watchedPromo && originalPrice && discountPercentage !== null) {
+      const newPrice = Math.round(originalPrice * (1 - discountPercentage / 100));
       if (form.getValues("price") !== newPrice) {
         form.setValue("price", newPrice);
       }
